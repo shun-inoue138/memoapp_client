@@ -9,6 +9,7 @@ import Button from "../src/components/atoms/Button";
 import AuthLayout from "../src/components/templates/AuthLayout";
 import { authAPI } from "../src/api/authAPI";
 import { saveTokenToLocalStorage } from "../lib/function";
+import { signupInputArrayFactory } from "../lib/const";
 
 type IFormInputs = {
   username: string;
@@ -48,57 +49,7 @@ const Signup = () => {
     }
   };
 
-  const inputArray = [
-    {
-      sr: "Name",
-      placeholder: "ユーザー名",
-      type: "text",
-      registerReturn: register("username", {
-        required: "必須です",
-        maxLength: { value: 10, message: "10文字以内です" },
-        minLength: { value: 2, message: "2文字以上です" },
-        pattern: { value: /^[A-Za-z0-9]+$/i, message: "半角英字のみです" },
-      }),
-      errors: errors.username?.message,
-    },
-    {
-      sr: "Email",
-      placeholder: "Eメール",
-      type: "email",
-      registerReturn: register("email", {
-        required: "必須です",
-        pattern: {
-          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-          message: "有効なメールアドレスではありません",
-        },
-      }),
-      errors: errors.email?.message,
-    },
-    {
-      sr: "Password",
-      placeholder: "パスワード",
-      type: "password",
-      registerReturn: register("password", {
-        required: "必須です",
-        maxLength: { value: 10, message: "10文字以内です" },
-        minLength: { value: 2, message: "2文字以上です" },
-        pattern: { value: /^[A-Za-z0-9]+$/i, message: "半角英字のみです" },
-      }),
-      errors: errors.password?.message,
-    },
-    {
-      sr: "Password Confirmation",
-      placeholder: "パスワード確認",
-      type: "password",
-      registerReturn: register("password_confirmation", {
-        required: "必須です",
-        validate: (value) =>
-          value === getValues("password") || "パスワードが一致しません",
-      }),
-      errors: errors.password_confirmation?.message,
-    },
-  ];
-
+  const inputArray = signupInputArrayFactory(register, errors, getValues);
   const formContent = (
     <div>
       <div className="text-center">新規登録はこちらから</div>

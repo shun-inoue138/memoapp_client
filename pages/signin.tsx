@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useMemo } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -11,6 +11,7 @@ import Button from "../src/components/atoms/Button";
 import axios from "axios";
 import { authAPI } from "../src/api/authAPI";
 import { saveTokenToLocalStorage } from "../lib/function";
+import { signinInputArrayFactory } from "../lib/const";
 
 type IFormInputs = {
   name: string;
@@ -51,37 +52,14 @@ const Login = () => {
   };
 
   //定数だが、コンポーネントの中に入れているので、毎回再生成されてしまう。registerの部分をcbとしてなんとかできないだろうか
-  const inputArray = [
-    {
-      sr: "Email",
-      placeholder: "Eメール",
-      type: "email",
-      registerReturn: register("email", {
-        required: "必須です",
-        pattern: {
-          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-          message: "有効なメールアドレスではありません",
-        },
-      }),
-      errors: errors.email?.message,
-    },
-    {
-      sr: "Password",
-      placeholder: "パスワード",
-      type: "password",
-      registerReturn: register("password", {
-        required: "必須です",
-        maxLength: { value: 10, message: "10文字以内です" },
-        minLength: { value: 2, message: "2文字以上です" },
-        pattern: { value: /^[A-Za-z0-9]+$/i, message: "半角英字のみです" },
-      }),
-      errors: errors.password?.message,
-    },
-  ];
+  const inputArray = useMemo(() => {
+    return signinInputArrayFactory(register, errors);
+  }, [register, errors]);
 
   const formContent = (
     <div>
       <div className="text-center">ログインはこちらから</div>
+      {/* todo:formのコンポーネント化 */}
       <form className="flex flex-col gap-2 items-stretch  h-full my-4 mx-4">
         {inputArray.map((inputItem) => {
           return <InputItemComponent {...inputItem} key={inputItem.sr} />;
