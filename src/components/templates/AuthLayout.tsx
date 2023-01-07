@@ -1,14 +1,10 @@
 import { useRouter } from "next/router";
 import React, { FC, ReactNode, useEffect, useLayoutEffect } from "react";
-import { tryTokenAuth } from "../../../lib/function";
+
+import { useJwtAuth } from "../../hooks/useJwtAuth";
 
 const AuthLayout: FC<{ formContent: ReactNode }> = ({ formContent }) => {
-  const router = useRouter();
-  useEffect(() => {
-    console.log("AuthLayout");
-
-    tryTokenAuth(router);
-  }, []);
+  useJwtAuth();
   return (
     <div className="h-screen grid grid-cols-2 items-center justify-items-center">
       <div>

@@ -1,8 +1,35 @@
 import React from "react";
-import Button from "../src/components/atoms/Button";
+import {
+  Menu,
+  MenuItem,
+  Sidebar,
+  SubMenu,
+  useProSidebar,
+} from "react-pro-sidebar";
 
-const index = () => {
-  return <div className="">this is home</div>;
+const Home = () => {
+  const { collapseSidebar } = useProSidebar();
+  return (
+    <>
+      <Sidebar>
+        <Menu>
+          <SubMenu label="Charts">
+            <MenuItem> Pie charts </MenuItem>
+            <MenuItem> Line charts </MenuItem>
+          </SubMenu>
+          <MenuItem> Documentation </MenuItem>
+          <MenuItem> Calendar </MenuItem>
+        </Menu>
+      </Sidebar>
+      <button
+        onClick={() => {
+          collapseSidebar();
+        }}
+      >
+        collapse
+      </button>
+    </>
+  );
 };
 
-export default index;
+export default Home;
