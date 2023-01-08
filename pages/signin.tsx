@@ -12,30 +12,17 @@ import axios from "axios";
 import { authAPI } from "../src/api/authAPI";
 import { saveTokenToLocalStorage } from "../lib/function";
 import { signinInputArrayFactory } from "../lib/const";
-
-type IFormInputs = {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-};
+import { useAuthRouter } from "../src/hooks/useAuthRouter";
+import { IFormInputs, useAuthForm } from "../src/hooks/useAuthForm";
+import AuthFormContainer from "../src/components/atoms/AuthFormContainer";
 
 const Login = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   //todo:下記２行をhooksに切り出す
-  const router = useRouter();
-  const { email = "", password = "" } = router.query;
-
-  //todo:下記をhooksに切り出す
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-    reset,
-  } = useForm<IFormInputs>({
-    mode: "onChange",
-    defaultValues: { email: email, password: password },
+  const { router, email, password } = useAuthRouter();
+  const { register, handleSubmit, getValues, errors, reset } = useAuthForm({
+    defaultEmail: email,
+    defaultPassword: password,
   });
 
   const onSubmitHandler = async (data: IFormInputs) => {
@@ -60,7 +47,7 @@ const Login = () => {
     <div>
       <div className="text-center">ログインはこちらから</div>
       {/* todo:formのコンポーネント化 */}
-      <form className="flex flex-col gap-2 items-stretch  h-full my-4 mx-4">
+      <AuthFormContainer>
         {inputArray.map((inputItem) => {
           return <InputItemComponent {...inputItem} key={inputItem.sr} />;
         })}
@@ -93,7 +80,7 @@ const Login = () => {
         >
           アカウント作成
         </Button>
-      </form>
+      </AuthFormContainer>
     </div>
   );
   return (

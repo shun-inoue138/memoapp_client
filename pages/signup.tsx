@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -10,28 +10,17 @@ import AuthLayout from "../src/components/templates/AuthLayout";
 import { authAPI } from "../src/api/authAPI";
 import { saveTokenToLocalStorage } from "../lib/function";
 import { signupInputArrayFactory } from "../lib/const";
-
-type IFormInputs = {
-  username: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-};
+import { useAuthRouter } from "../src/hooks/useAuthRouter";
+import { IFormInputs, useAuthForm } from "../src/hooks/useAuthForm";
+import AuthFormContainer from "../src/components/atoms/AuthFormContainer";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const router = useRouter();
-  //初回訪問時はrouter.queryが空なので、空の文字列を代入しておく
-  const { email = "", password = "" } = router.query;
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-    reset,
-  } = useForm<IFormInputs>({
-    mode: "onChange",
-    defaultValues: { email: email, password: password },
+  const { router, email, password } = useAuthRouter();
+
+  const { register, handleSubmit, getValues, errors, reset } = useAuthForm({
+    defaultEmail: email,
+    defaultPassword: password,
   });
   const onSubmitHandler = async (data: IFormInputs) => {
     setIsLoading(true);
@@ -49,12 +38,15 @@ const Signup = () => {
     }
   };
 
-  const inputArray = signupInputArrayFactory(register, errors, getValues);
+  const inputArray = useMemo(() => {
+    return signupInputArrayFactory(register, errors, getValues);
+  }, [register, errors]);
+
   const formContent = (
     <div>
       <div className="text-center">新規登録はこちらから</div>
       {/* todo:formをコンポーネント化する */}
-      <form className="flex flex-col gap-2 items-stretch  h-full my-4 mx-4">
+      <AuthFormContainer>
         {inputArray.map((inputItem) => {
           return <InputItemComponent {...inputItem} key={inputItem.sr} />;
         })}
@@ -84,7 +76,7 @@ const Signup = () => {
         >
           ログイン
         </Button>
-      </form>
+      </AuthFormContainer>
     </div>
   );
   return (
