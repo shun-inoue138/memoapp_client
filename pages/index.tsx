@@ -12,6 +12,10 @@ import {
 const Home = () => {
   const { collapseSidebar, toggleSidebar } = useProSidebar();
   const router = useRouter();
+  const logout = () => {
+    localStorage.removeItem("token");
+    router.push("/signin");
+  };
   return (
     <div className="flex">
       <Sidebar className="h-[100vh] sticky top-0 left-0">
@@ -20,14 +24,7 @@ const Home = () => {
             <MenuItem> Pie charts </MenuItem>
             <MenuItem> Line charts </MenuItem>
           </SubMenu>
-          <MenuItem
-            onClick={() => {
-              router.push("/signin");
-            }}
-          >
-            Documentation
-          </MenuItem>
-          <MenuItem>hoge</MenuItem>
+          <MenuItem onClick={logout}>logout</MenuItem>
         </Menu>
       </Sidebar>
       <div className="bg-slate-800 w-full h-[1000px]">

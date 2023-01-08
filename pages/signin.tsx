@@ -10,8 +10,8 @@ import InputItemComponent from "../src/components/molecules/InputItemComponent";
 import Button from "../src/components/atoms/Button";
 import axios from "axios";
 import { authAPI } from "../src/api/authAPI";
-import { saveTokenToLocalStorage } from "../lib/function";
-import { signinInputArrayFactory } from "../lib/const";
+import { saveTokenToLocalStorage } from "../src/utils/function";
+import { signinInputArrayFactory } from "../src/utils/const";
 import { useAuthRouter } from "../src/hooks/useAuthRouter";
 import { IFormInputs, useAuthForm } from "../src/hooks/useAuthForm";
 import AuthFormContainer from "../src/components/atoms/AuthFormContainer";
@@ -38,11 +38,38 @@ const Login = () => {
     }
   };
 
-  //定数だが、コンポーネントの中に入れているので、毎回再生成されてしまう。registerの部分をcbとしてなんとかできないだろうか
-  const inputArray = useMemo(() => {
-    return signinInputArrayFactory(register, errors);
-  }, [register, errors]);
-
+  //useMemoを使うと、errorsが更新されない。
+  // const inputArray = useMemo(() => {
+  //   return signinInputArrayFactory(register, errors);
+  // }, [errors]);
+  const inputArray = signinInputArrayFactory(register, errors);
+  // const inputArray = [
+  //   {
+  //     sr: "Email",
+  //     placeholder: "Eメール",
+  //     type: "email",
+  //     registerReturn: register("email", {
+  //       required: "必須です",
+  //       pattern: {
+  //         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+  //         message: "有効なメールアドレスではありません",
+  //       },
+  //     }),
+  //     errors: errors.email?.message,
+  //   },
+  //   {
+  //     sr: "Password",
+  //     placeholder: "パスワード",
+  //     type: "password",
+  //     registerReturn: register("password", {
+  //       required: "必須です",
+  //       maxLength: { value: 10, message: "10文字以内です" },
+  //       minLength: { value: 2, message: "2文字以上です" },
+  //       pattern: { value: /^[A-Za-z0-9]+$/i, message: "半角英字のみです" },
+  //     }),
+  //     errors: errors.password?.message,
+  //   },
+  // ];
   const formContent = (
     <div>
       <div className="text-center">ログインはこちらから</div>

@@ -8,8 +8,8 @@ import InputItemComponent from "../src/components/molecules/InputItemComponent";
 import Button from "../src/components/atoms/Button";
 import AuthLayout from "../src/components/templates/AuthLayout";
 import { authAPI } from "../src/api/authAPI";
-import { saveTokenToLocalStorage } from "../lib/function";
-import { signupInputArrayFactory } from "../lib/const";
+import { saveTokenToLocalStorage } from "../src/utils/function";
+import { signupInputArrayFactory } from "../src/utils/const";
 import { useAuthRouter } from "../src/hooks/useAuthRouter";
 import { IFormInputs, useAuthForm } from "../src/hooks/useAuthForm";
 import AuthFormContainer from "../src/components/atoms/AuthFormContainer";
@@ -37,10 +37,11 @@ const Signup = () => {
       setIsLoading(false);
     }
   };
-
-  const inputArray = useMemo(() => {
-    return signupInputArrayFactory(register, errors, getValues);
-  }, [register, errors]);
+  //useMemoを使うと、errorsが更新されない。
+  // const inputArray = useMemo(() => {
+  //   return signupInputArrayFactory(register, errors, getValues);
+  // }, [register, errors, getValues]);
+  const inputArray = signupInputArrayFactory(register, errors, getValues);
 
   const formContent = (
     <div>

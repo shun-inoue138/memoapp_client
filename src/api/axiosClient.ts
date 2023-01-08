@@ -1,4 +1,4 @@
-import { BASE_API_URL } from "./../../lib/const";
+import { BASE_API_URL } from "../utils/const";
 import axios from "axios";
 
 const getToken = () => {
