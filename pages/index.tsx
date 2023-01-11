@@ -8,12 +8,20 @@ import {
   SubMenu,
   useProSidebar,
 } from "react-pro-sidebar";
+import useUserStore from "../src/stores/useUserStore";
 
 const Home = () => {
   const { collapseSidebar, toggleSidebar } = useProSidebar();
   const router = useRouter();
+  const { currentUser, resetCurrentUser } = useUserStore((state) => {
+    return {
+      currentUser: state.currentUser,
+      resetCurrentUser: state.resetCurrentUser,
+    };
+  });
   const logout = () => {
     localStorage.removeItem("token");
+    resetCurrentUser();
     router.push("/signin");
   };
   return (
@@ -28,6 +36,11 @@ const Home = () => {
         </Menu>
       </Sidebar>
       <div className="bg-slate-800 w-full h-[1000px]">
+        {currentUser.id !== 0 ? (
+          <div>{currentUser.username}さんようこそ</div>
+        ) : (
+          <div>ななしさんようこそ</div>
+        )}
         <button
           onClick={() => {
             return toggleSidebar();

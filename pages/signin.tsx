@@ -15,6 +15,7 @@ import { signinInputArrayFactory } from "../src/utils/const";
 import { useAuthRouter } from "../src/hooks/useAuthRouter";
 import { IFormInputs, useAuthForm } from "../src/hooks/useAuthForm";
 import AuthFormContainer from "../src/components/atoms/AuthFormContainer";
+import useUserStore from "../src/stores/useUserStore";
 
 const Login = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -24,12 +25,17 @@ const Login = () => {
     defaultEmail: email,
     defaultPassword: password,
   });
+  const { currentUser, setCurrentUser } = useUserStore(
+    (state) => state,
+    (prev, next) => prev.currentUser === next.currentUser
+  );
 
   const onSubmitHandler = async (data: IFormInputs) => {
     setIsLoading(true);
     try {
       const res = await authAPI.signin(data);
-      saveTokenToLocalStorage(res.data.token);
+      await saveTokenToLocalStorage(res.data.token);
+      setCurrentUser(res.data.user);
       setIsLoading(false);
       router.push("/");
     } catch (error) {

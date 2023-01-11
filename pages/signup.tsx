@@ -13,6 +13,7 @@ import { signupInputArrayFactory } from "../src/utils/const";
 import { useAuthRouter } from "../src/hooks/useAuthRouter";
 import { IFormInputs, useAuthForm } from "../src/hooks/useAuthForm";
 import AuthFormContainer from "../src/components/atoms/AuthFormContainer";
+import useUserStore from "../src/stores/useUserStore";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -22,6 +23,9 @@ const Signup = () => {
     defaultEmail: email,
     defaultPassword: password,
   });
+  const { setCurrentUser } = useUserStore((state) => {
+    return { setCurrentUser: state.setCurrentUser };
+  });
   const onSubmitHandler = async (data: IFormInputs) => {
     setIsLoading(true);
     try {
@@ -30,7 +34,8 @@ const Signup = () => {
         password: data.password,
         username: data.username,
       });
-      saveTokenToLocalStorage(res.data.token);
+      await saveTokenToLocalStorage(res.data.token);
+      setCurrentUser(res.data.user);
       setIsLoading(false);
     } catch (error) {
       alert(error);
